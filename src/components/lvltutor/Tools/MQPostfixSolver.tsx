@@ -8,7 +8,6 @@ const MQPostfixSolver = (MQPostfixExpression:string,ValuesObject:object[]) => {
 
     const solveExpresion = (expression:string) => {
         var exp=expression.split(" ");
-        console.log(exp)
         var stack = [];
         var alphabet = new RegExp(/^[a-zA-Z]$/);
         var number = new RegExp(/^[0-9]+[.0-9]*$/);
@@ -53,7 +52,6 @@ const MQPostfixSolver = (MQPostfixExpression:string,ValuesObject:object[]) => {
                 }
             }
         }
-        console.log(stack,"return: ",stack[0])
         return stack[0];
     }
 

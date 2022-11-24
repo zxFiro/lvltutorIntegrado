@@ -12,8 +12,12 @@ import dynamic from "next/dynamic";
 import { useAction } from "../../../utils/action";
 
 const Solver2 = ({steps,nextRouter}) => {
+    const [cdateS,setCdateS]=useState(Date.now());
+    const [cdateE,setCdateE]=useState(Date.now());
+
     const action = useAction();
     useEffect(() => {
+        setCdateS(Date.now())
         action({
         verbName: "loadContent",
         contentID: steps?.code,
@@ -23,7 +27,6 @@ const Solver2 = ({steps,nextRouter}) => {
 
     const [iv,setIv]=useState();
     const [submit,setSubmit]=useState(false);
-    const [fail,setFail]=useState(true);
 
     const Mq2 = dynamic(
         () => {
@@ -36,13 +39,13 @@ const Solver2 = ({steps,nextRouter}) => {
     const router = useRouter();
     const { pid } = router.query;
 
-    //const action=useAction();//send action to central system
+
     class passingPotato {
         private states = {
             "disabled":true,
             "hidden":false,
             "answer":false,
-            "value":"",
+            "value":{},
             "open":false
         }
 
@@ -71,10 +74,9 @@ const Solver2 = ({steps,nextRouter}) => {
     const cantidadDePasos= steps.steps.length;
 
     let potatoStates = [new passingPotato()];
-    potatoStates[0].setStates({"disabled":false,"hidden":false,"answer":false,"value":"","open":true});
+    potatoStates[0].setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
 
     const [defaultIndex,setDefaultIndex]=useState([0]);
-    const shadowIndex=useRef([0]);
 
     for (let i=0; i< cantidadDePasos;i++) {
         potatoStates.push(new passingPotato());
@@ -90,8 +92,7 @@ const Solver2 = ({steps,nextRouter}) => {
         "e6":3
     }
 
-
-    const [ans,setAns]=useState("");
+    const [submitValues,setSubmitValues]=useState({ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0})
 
     const listaDePasos = steps.steps.map((step,i) => (
         <Mq2 
@@ -100,26 +101,40 @@ const Solver2 = ({steps,nextRouter}) => {
                 content={steps.code}
                 topic={steps.code}
                 disablehint={false}
-                setAns={setAns}
                 setDefaultIndex={setDefaultIndex}
                 setSubmit={setSubmit}
-                setFail={setFail}
+                setSubmitValues={setSubmitValues}
+                setCdateE={setCdateE}
             >
         </Mq2>
         )
     )
 
-
     useEffect(
        ()=>{ 
         if(submit){
-            console.log(submit);
-            if(!fail){
+            if(!submitValues.fail){
                 let a=test;
-                a[defaultIndex[0]-1].setStates({"disabled":false,"hidden":false,"answer":true,"value":ans,"open":false});
+                let duration=(cdateE-cdateS)/1000;
+                let sv=submitValues;
+                sv.duration=duration;
+                setCdateS(Date.now());
+                a[defaultIndex[0]-1].setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
                 if(defaultIndex[0]<cantidadDePasos){
-                    a[defaultIndex[0]].setStates({"disabled":false,"hidden":false,"answer":false,"value":"","open":true});
+                    a[defaultIndex[0]].setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
                 } else {
+                    let completecontent = [];
+                    for(let i=0;i<test.length;i++)completecontent.push(test[i]?.getStates().value);
+                    let extra={
+                        steps:Object.assign({}, completecontent)
+                    }
+                    action({
+                        verbName: "completeContent",
+                        result: 1,
+                        contentID: steps?.code,
+                        topicID: steps?.code,
+                        extra:extra
+                    });
                     setResumen(false)
                 }
                 setTest(a);
@@ -137,7 +152,7 @@ const Solver2 = ({steps,nextRouter}) => {
                 <VStack alignItems="center" justifyContent="center" margin={"auto"}>
                     <MathComponent
                     key={"respuesta"+i}
-                    tex={a.value}
+                    tex={a.value.ans}
                     display={true}
                     />
                 </VStack>
@@ -151,7 +166,7 @@ const Solver2 = ({steps,nextRouter}) => {
         <Flex height="100vh"  alignItems="center" justifyContent="center" margin={"auto"}>
             <Flex direction="column" background="gray.100" p={12} rounded={6} w='100%' maxW='3xl' alignItems="center" justifyContent="center" margin={"auto"}>
                 <Heading as='h1' size='lg' noOfLines={1}>{pid}</Heading>
-                <Heading as='h1' size='lg' noOfLines={3}>{"titulo de contedino en plataforma"}</Heading>
+                <Heading as='h1' size='lg' noOfLines={3}>{""+cdateS}</Heading>
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
                 <MathComponent tex={steps.steps[0].expression} display={true} />
                 <Accordion

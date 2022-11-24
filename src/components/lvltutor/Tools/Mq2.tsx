@@ -12,7 +12,7 @@ import { useAction } from "../../../utils/action";
 addStyles();
 
 
-const Mq2 =  ({step,content,topic,disablehint,setAns,setDefaultIndex,setSubmit,setFail}) => {
+const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}) => {
 
     const action = useAction();
 
@@ -44,9 +44,9 @@ const Mq2 =  ({step,content,topic,disablehint,setAns,setDefaultIndex,setSubmit,s
     
     //hooks de miguel definido para los hints
     const [error, setError] = useState(false); //true when the student enters an incorrect answers
-    const [hints,setHints]=useState(0);
     const [fc,setFC] = useState(true);
     const [attempts,setAttempts]=useState(0);
+    const [hints,setHints]=useState(0);
     
     //la siguiente funcion maneja la respuesta ingresada, la respuesta se compara con el valor correspondiente almacenado en el ejercicio.json
     //Ademas, se manejan los componentes de alerta utilizado en el componente padre(solver2) y el componente hijo(Mq2)
@@ -58,7 +58,6 @@ const Mq2 =  ({step,content,topic,disablehint,setAns,setDefaultIndex,setSubmit,s
         let answer1 = "";
         let answer2 = "";
         if (step.values != undefined) {
-            console.log("valores: ", step.values)
             answer1= MQPostfixSolver(parse1.substring(0),step.values);
             answer2= MQPostfixSolver(parse2.substring(0),step.values);
         } else {
@@ -66,20 +65,20 @@ const Mq2 =  ({step,content,topic,disablehint,setAns,setDefaultIndex,setSubmit,s
             answer2= MQPostfixSolver(parse2.substring(0),step.values);
         }
         if(answer1==answer2) {
+            setCdateE(Date.now());
             setAlerta("success");
             setAlertaMSG("Has ingresado la expresion correctamente!.");
             setAlertaVisibility(false);
-            setAns(latex);
             setFC(true);
             if(setDefaultIndex)setDefaultIndex([parseInt(step.stepId)+1])
-            setFail(false);
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0})
             setError(false);
         } else {
             setAlerta("error");
             setAlertaMSG("La expresion ingresada no es correcta.");
             setAlertaVisibility(false);
             setError(true);
-            setFail(true);
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0})
         }
         setSubmit(true);
         setAttempts(attempts+1);

@@ -71,7 +71,6 @@ const MQPostfixparser = (MQinfixInput:string) => {
             }
         }
         let acc=0;
-        console.log(replacePositions);
         for (let i=0; i<replacePositions.length;i++) {
             let lit=replacePositions[i].lit;
             if(lit.localeCompare(" ")!=0){
@@ -141,9 +140,7 @@ const MQPostfixparser = (MQinfixInput:string) => {
         a=a.replace(/\\cdot/g,"*");
         a=a.replace(/\\sqrt/g,"sqrt");
         if(a.search("frac")!=-1) a=fracctoInfix(a);
-        console.log(1,a);
         a=lazymath(a);
-        console.log(2,a);
         a=a.replace(/\)\(/g,")*(");
         var l=a.length;
         var literal="";
