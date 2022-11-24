@@ -185,19 +185,19 @@ const MQPostfixparser = (MQinfixInput:string) => {
                     cOp=literal;
                     literal="";
                 }
-                if ("-".localeCompare(cOp)==0 && l-i>1){
+                if ("-".localeCompare(cOp)==0 && l-i>1){ //detecting if "-" is an unary operator
                     if(i==0 || i>0 && (typeof operator[a[i-1]]!="undefined" || "(".localeCompare(a[i-1])==0)){
                         cOp="\\um"
                     } 
                 }
                 while(stack.length!=0 //if the stack has an operator
-                    && "(".localeCompare(stack[stack.length-1])!=0 //if the top operator is not (
+                    && "(".localeCompare(stack[stack.length-1])!=0 //if the top operator is not "("
                     && (
                         precedense[stack[stack.length-1]]>precedense[cOp] //if the top operator has greater precedense
                         ||
-                        ((precedense[stack[stack.length-1]]==precedense[cOp])
+                        ((precedense[stack[stack.length-1]]==precedense[cOp]) //if they have same precedense
                         &&
-                        (typeof associativity[a[i]]!="undefined"?(associativity[a[i]]=='left'):false)
+                        (typeof associativity[a[i]]!="undefined"?(associativity[a[i]]=='left'):false) //if current operator is left associative
                         )
                     )
                     )output=output+" "+stack.pop();
@@ -205,7 +205,7 @@ const MQPostfixparser = (MQinfixInput:string) => {
             } else if (a[i].localeCompare("(")==0) {
                 stack.push("(");
             }else if (a[i].localeCompare(")")==0) {
-                while("(".localeCompare(stack[stack.length-1])!=0) //if the top operator is not 
+                while("(".localeCompare(stack[stack.length-1])!=0) //if the top operator is not "(" 
                 {
                     if(stack.length>0) output=output+" "+stack.pop();
                 }

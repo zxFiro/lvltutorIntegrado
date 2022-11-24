@@ -47,6 +47,7 @@ const Mq2 =  ({step,content,topic,disablehint,setAns,setDefaultIndex,setSubmit,s
     const [hints,setHints]=useState(0);
     const [fc,setFC] = useState(true);
     const [attempts,setAttempts]=useState(0);
+    
     //la siguiente funcion maneja la respuesta ingresada, la respuesta se compara con el valor correspondiente almacenado en el ejercicio.json
     //Ademas, se manejan los componentes de alerta utilizado en el componente padre(solver2) y el componente hijo(Mq2)
     //finalmente, se maneja la activacion del siguiente paso o resumen en caso de que la respuesta ingresada es correcta
