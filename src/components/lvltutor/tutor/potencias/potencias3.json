@@ -2,6 +2,7 @@
     {
         "code": "pot3",
         "meta": {},
+        "title":"Reducción de expresión",
         "text": "Reduce la siguiente expresion:",
         "type":"lvltutor",
         "steps": [

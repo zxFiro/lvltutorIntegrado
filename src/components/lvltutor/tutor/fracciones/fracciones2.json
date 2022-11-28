@@ -2,6 +2,7 @@
     {
         "code": "fracc2",
         "meta": {},
+        "title":"Suma de fracciones",
         "text": "Realizar las operaciones encontradas en la siguiente expresion:",
         "type": "lvltutor",
         "steps": [

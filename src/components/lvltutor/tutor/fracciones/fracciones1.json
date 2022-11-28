@@ -2,7 +2,7 @@
     {
         "code": "fracc1",
         "meta": {},
-        "label": "Fracción Algebraica",
+        "title":"Fracción Algebraica",
         "text": "Reduce la siguiente expresion:",
         "type":"lvltutor",
         "steps": [

@@ -1,5 +1,5 @@
 import {Alert, AlertIcon,Button, Stack, Box, HStack, VStack, StyledStepper} from '@chakra-ui/react';
-import {useState, useCallback,memo, useEffect} from "react";
+import {useState, useCallback,memo, useEffect,useRef} from "react";
 import { addStyles, EditableMathField } from 'react-mathquill';
 import { MathComponent } from "../../../components/MathJax";
 //se importa el componente hint desarrollado por Miguel Nahuelpan
@@ -12,7 +12,7 @@ import { useAction } from "../../../utils/action";
 addStyles();
 
 
-const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}) => {
+const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}) => {
 
     const action = useAction();
 
@@ -47,6 +47,9 @@ const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmi
     const [fc,setFC] = useState(true);
     const [attempts,setAttempts]=useState(0);
     const [hints,setHints]=useState(0);
+    const [lastHint,setLastHint]=useState(false);
+
+    const result=useRef(false);
     
     //la siguiente funcion maneja la respuesta ingresada, la respuesta se compara con el valor correspondiente almacenado en el ejercicio.json
     //Ademas, se manejan los componentes de alerta utilizado en el componente padre(solver2) y el componente hijo(Mq2)
@@ -65,21 +68,38 @@ const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmi
             answer2= MQPostfixSolver(parse2.substring(0),step.values);
         }
         if(answer1==answer2) {
+            result.current=true;
             setCdateE(Date.now());
             setAlerta("success");
             setAlertaMSG("Has ingresado la expresion correctamente!.");
             setAlertaVisibility(false);
             setFC(true);
             if(setDefaultIndex)setDefaultIndex([parseInt(step.stepId)+1])
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0})
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:lastHint,fail:false,duration:0})
             setError(false);
         } else {
+            result.current=false;
             setAlerta("error");
             setAlertaMSG("La expresion ingresada no es correcta.");
             setAlertaVisibility(false);
             setError(true);
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0})
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:lastHint,fail:true,duration:0})
         }
+        action({
+            verbName: "tryStep",
+            stepID: "" + step.stepId,
+            contentID: content,
+            topicID: topicId,
+            result: result.current? 1 : 0,
+            kcsIDs: step.KCs,
+            extra: {
+              response: [
+                latex
+              ],
+              attempts: attempts,
+              hints: hints,
+            }
+          });
         setSubmit(true);
         setAttempts(attempts+1);
     }
@@ -109,7 +129,7 @@ const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmi
                 <Hint
                 hints={step.hints}
                 contentId={content}
-                topicId={topic}
+                topicId={topicId}
                 stepId={step.stepId}
                 matchingError={step.matchingError}
                 response={[latex]}
@@ -117,6 +137,7 @@ const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmi
                 setError={setError}
                 hintCount={hints}
                 setHints={setHints}
+                setLastHint={setLastHint}
                 ></Hint>
             )
         }
@@ -186,21 +207,6 @@ const Mq2 =  ({step,content,topic,disablehint,setDefaultIndex,setSubmit,setSubmi
                             onClick={
                                 ()=>{
                                     handleAnswer();
-                                    action({
-                                        verbName: "tryStep",
-                                        stepID: "" + step.stepId,
-                                        contentID: content,
-                                        topicID: topic,
-                                        result: error === null ? 0 : 1,
-                                        kcsIDs: step.KCs,
-                                        extra: {
-                                          response: [
-                                            latex
-                                          ],
-                                          attempts: attempts,
-                                          hints: hints,
-                                        }
-                                      });
                                 }
                             }
                         >Enviar</Button>

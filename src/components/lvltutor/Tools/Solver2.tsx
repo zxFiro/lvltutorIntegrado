@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 //reporte de acciones
 import { useAction } from "../../../utils/action";
 
-const Solver2 = ({steps,nextRouter}) => {
+const Solver2 = ({topicId,steps,nextRouter}) => {
     const [cdateS,setCdateS]=useState(Date.now());
     const [cdateE,setCdateE]=useState(Date.now());
 
@@ -99,7 +99,7 @@ const Solver2 = ({steps,nextRouter}) => {
                 key={"Mq2"+i}
                 step={step}
                 content={steps.code}
-                topic={steps.code}
+                topicId={topicId}
                 disablehint={false}
                 setDefaultIndex={setDefaultIndex}
                 setSubmit={setSubmit}
@@ -132,7 +132,7 @@ const Solver2 = ({steps,nextRouter}) => {
                         verbName: "completeContent",
                         result: 1,
                         contentID: steps?.code,
-                        topicID: steps?.code,
+                        topicID: topicId,
                         extra:extra
                     });
                     setResumen(false)
@@ -163,10 +163,9 @@ const Solver2 = ({steps,nextRouter}) => {
     }
 
     return(
-        <Flex height="100vh"  alignItems="center" justifyContent="center" margin={"auto"}>
+        <Flex alignItems="center" justifyContent="center" margin={"auto"}>
             <Flex direction="column" background="gray.100" p={12} rounded={6} w='100%' maxW='3xl' alignItems="center" justifyContent="center" margin={"auto"}>
-                <Heading as='h1' size='lg' noOfLines={1}>{pid}</Heading>
-                <Heading as='h1' size='lg' noOfLines={3}>{""+cdateS}</Heading>
+                <Heading as='h1' size='lg' noOfLines={3}>{steps.title}</Heading>
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
                 <MathComponent tex={steps.steps[0].expression} display={true} />
                 <Accordion
@@ -194,7 +193,7 @@ const Solver2 = ({steps,nextRouter}) => {
                                             verbName: "openStep",
                                             stepID: "" + i,
                                             contentID: steps?.code,
-                                            topicID: steps?.code
+                                            topicID: topicId
                                         });
                                         potstate.open=true;
                                         potstates[parseInt(step.stepId)]?.setStates(potstate);
@@ -204,7 +203,7 @@ const Solver2 = ({steps,nextRouter}) => {
                                             verbName: "closeStep",
                                             stepID: "" + i,
                                             contentID: steps?.code,
-                                            topicID: steps?.code
+                                            topicID: topicId
                                         });
                                         potstate.open=false;
                                         potstates[parseInt(step.stepId)]?.setStates(potstate);

@@ -2,6 +2,7 @@
     {
         "code": "pot2",
         "meta": {},
+        "title":"Evaluar expresión",
         "text": "Evalúe las siguientes expresiones:",
         "type":"lvltutor",
         "steps": [

@@ -2,6 +2,7 @@
     {
         "code": "pot1",
         "meta": {},
+        "title":"Notación científica",
         "text": "Escriba las siguientes expresiones en notacion cientifica",
         "type":"lvltutor",
         "steps": [

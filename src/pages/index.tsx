@@ -17,34 +17,34 @@ export default function Index() {
 
   const {pid} = router.query;
   const query = router.query;
-  let data = [{}];
+  let data = {};
   switch(query.pid) {
     case "0":
-      data=data1;
+      data={d:data1,topicId:"fracc1"};
         break;
     case "1":
-      data=data2;
+      data={d:data2,topicId:"fracc2"};
         break;
     case "2":
-      data=data3;
+      data={d:data3,topicId:"pot1"};
         break;
     case "3":
-      data=data4;
+      data={d:data4,topicId:"pot2"};
         break;
     case "4":
-      data=data5;
+      data={d:data5,topicId:"pot3"};
         break;
     case "5":
-      data=data6;
+      data={d:data6,topicId:"pot4"};
         break;
     default:
-      data=data1;
+      data={d:data1,topicId:"fracc1"};
   }
   
   return (
     <>
       {user && (
-        <Plain steps={data[0]}></Plain>
+        <Plain steps={data.d[0]} topicId={data.topicId}></Plain>
       )}
     </>
   );
