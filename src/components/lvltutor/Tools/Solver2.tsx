@@ -152,9 +152,10 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
                 <MathComponent tex={steps.steps[0]!.expression} display={true} />
                 <Accordion
+                    onChange={(algo)=>setDefaultIndex(algo as Array<number>)}
                     index={defaultIndex}
-                    allowToggle
-                    allowMultiple
+                    allowToggle={true}
+                    allowMultiple={true}
                 >
                     {steps.steps.map((step,i) => (
                     <AccordionItem
