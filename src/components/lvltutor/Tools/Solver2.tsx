@@ -10,7 +10,9 @@ import dynamic from "next/dynamic";
 //reporte de acciones
 import { useAction } from "../../../utils/action";
 
-const Solver2 = ({topicId,steps,nextRouter}) => {
+import type {ExType,Step} from "./ExcerciseType";
+
+const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     const [cdateS,setCdateS]=useState(Date.now());
     const [cdateE,setCdateE]=useState(Date.now());
 
@@ -20,7 +22,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
         action({
         verbName: "loadContent",
         contentID: steps?.code,
-        topicID: steps?.code,
+        topicID: topicId,
         });
     }, []);
 
@@ -133,7 +135,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
 
     const [pasos,setPasos]= useState(listaDePasos);
 
-    const steporans = (step,i) => {
+    const steporans = (step:Step,i:number) => {
         let a=test[parseInt(step.stepId)!]!.getStates();
         if(a.answer){
             return(
@@ -155,7 +157,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
             <Flex direction="column" background="gray.100" p={12} rounded={6} w='100%' maxW='3xl' alignItems="center" justifyContent="center" margin={"auto"}>
                 <Heading as='h1' size='lg' noOfLines={3}>{steps.title}</Heading>
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
-                <MathComponent tex={steps.steps[0].expression} display={true} />
+                <MathComponent tex={steps.steps[0]!.expression} display={true} />
                 <Accordion
                     onChange={(algo)=>setDefaultIndex(algo)}
                     index={defaultIndex}
@@ -228,7 +230,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
                                     Expresión:
                                 </Text>
                                 <MathComponent
-                                        tex={steps.steps[0].expression}
+                                        tex={steps.steps[0]!.expression}
                                         display={true}
                                 />
                             </HStack>

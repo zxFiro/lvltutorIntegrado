@@ -9,10 +9,13 @@ import MQPostfixparser from './MQPostfixparser';
 //reporte de acciones
 import { useAction } from "../../../utils/action";
 
+import type {Step} from "./ExcerciseType";
+
 addStyles();
 
 
-const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}) => {
+const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}:
+    {step:Step,content:string,topicId:string,disablehint:boolean,setDefaultIndex:Function,setSubmit:Function,setSubmitValues:Function,setCdateE:Function}) => {
 
     const action = useAction();
 
@@ -51,7 +54,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     //Ademas, se manejan los componentes de alerta utilizado en el componente padre(solver2) y el componente hijo(Mq2)
     //finalmente, se maneja la activacion del siguiente paso o resumen en caso de que la respuesta ingresada es correcta
     const handleAnswer = () => {
-        let exp=step.answers[0].answer[0];
+        let exp=step.answers[0]!.answer[0];
         let parse1=MQPostfixparser(exp);
         let parse2=MQPostfixparser(latex);
         let answer1 = "";
@@ -110,7 +113,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
         }
     }
 
-    const MQtools = (operation,action,label) => {
+    const MQtools = (operation:string) => {
         if(ta!=undefined)ta.cmd(operation);
     }
 
