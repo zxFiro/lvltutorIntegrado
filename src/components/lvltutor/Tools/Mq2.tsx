@@ -54,7 +54,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     //finalmente, se maneja la activacion del siguiente paso o resumen en caso de que la respuesta ingresada es correcta
     const handleAnswer = () => {
         let exp=step.answers[0]!.answer[0];
-        let parse1=MQPostfixparser(exp);
+        let parse1=MQPostfixparser(exp!);
         let parse2=MQPostfixparser(latex);
         let answer1 = "";
         let answer2 = "";
