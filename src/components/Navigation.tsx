@@ -43,6 +43,15 @@ export function Navigation() {
             <SidebarLink href={"?pid=5"}>
              Racionalización
             </SidebarLink>
+            <SidebarLink href={"?pid=6"}>
+             m3
+            </SidebarLink>
+            <SidebarLink href={"?pid=7"}>
+             m4
+            </SidebarLink>
+            <SidebarLink href={"?pid=8"}>
+             m5
+            </SidebarLink>
           </>
         )}
         </Stack>}

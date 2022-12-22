@@ -1,6 +1,6 @@
-import {Alert, AlertIcon,Button, Stack, Box, HStack, VStack, StyledStepper} from '@chakra-ui/react';
-import {useState, useCallback,memo, useEffect,useRef} from "react";
-import { addStyles, EditableMathField } from 'react-mathquill';
+import {Alert, AlertIcon,Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
+import {useState,memo, useEffect,useRef} from "react";
+import { addStyles, EditableMathField,MathField } from 'react-mathquill';
 import { MathComponent } from "../../../components/MathJax";
 //se importa el componente hint desarrollado por Miguel Nahuelpan
 import Hint from "../Tools/Hint";
@@ -31,11 +31,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     }
     const [placeholder,setPlaceholder] = useState(true);
 
-    const [ta,setTa] = useState();
-
-    //hooks utilizados poara forzar el re-renderizado
-    const [, updateState] = useState();
-    const forceUpdate = useCallback(() => updateState({}), []);
+    const [ta,setTa] = useState<MathField | null>(null);
 
     //Inputsimple
     const [alerta,setAlerta] = useState("success");
@@ -61,13 +57,16 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
         let answer1 = "";
         let answer2 = "";
         if (step.values != undefined) {
-            answer1= MQPostfixSolver(parse1.substring(0),step.values);
-            answer2= MQPostfixSolver(parse2.substring(0),step.values);
+            answer1= ""+MQPostfixSolver(parse1.substring(0),step.values);
+            answer2= ""+MQPostfixSolver(parse2.substring(0),step.values);
         } else {
-            answer1= MQPostfixSolver(parse1.substring(0));
-            answer2= MQPostfixSolver(parse2.substring(0),step.values);
+            answer1= ""+MQPostfixSolver(parse1.substring(0),[{}]);
+            answer2= ""+MQPostfixSolver(parse2.substring(0),step.values);
         }
-        if(answer1==answer2) {
+        let relativeError=Math.abs(1-(parseFloat(answer1)/parseFloat(answer2)));
+        console.log(relativeError,parseInt(answer1),parseInt(answer2));
+        //la validacion considera una precision con un 0.5% de error relativo
+        if(relativeError<0.005) {
             result.current=true;
             setCdateE(Date.now());
             setAlerta("success");
@@ -105,9 +104,9 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     }
 
 
-    const refMQElement = (mathquill) => { 
+    const refMQElement = (mathquill:MathField) => { 
         if (ta==undefined) {
-            setTa(()=>{return mathquill});
+            setTa(mathquill);
         }
     }
 

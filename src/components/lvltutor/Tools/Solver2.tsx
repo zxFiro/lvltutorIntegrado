@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState,memo, useEffect,useRef} from 'react';
-import Link from "next/link";
+import { useState,memo, useEffect} from 'react';
 
 import { Flex, Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Heading, Alert,Text,AlertIcon,HStack,VStack,Button} from '@chakra-ui/react'
 import { MathComponent } from "../../MathJax";
@@ -25,7 +24,6 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
         });
     }, []);
 
-    const [iv,setIv]=useState();
     const [submit,setSubmit]=useState(false);
 
     const Mq2 = dynamic(
@@ -45,11 +43,9 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
             "disabled":true,
             "hidden":false,
             "answer":false,
-            "value":{},
+            "value":{ans:String,att:Number,hints:Number,lasthint:Boolean,fail:Boolean,duration:Number},
             "open":false
         }
-
-        private respuestaState;
 
         public counter=0;
 
@@ -61,20 +57,12 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
         public setStates(a){
             this.states=a;
         }
-
-        public getRespuestaState(){
-            return this.respuestaState;
-        }
-
-        public setRespuestaState(a){
-            this.respuestaState=a;
-        }
     }
 
     const cantidadDePasos= steps.steps.length;
 
     let potatoStates = [new passingPotato()];
-    potatoStates[0].setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
+    potatoStates[0]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
 
     const [defaultIndex,setDefaultIndex]=useState([0]);
 
@@ -119,9 +107,9 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
                 let sv=submitValues;
                 sv.duration=duration;
                 setCdateS(Date.now());
-                a[defaultIndex[0]-1].setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
-                if(defaultIndex[0]<cantidadDePasos){
-                    a[defaultIndex[0]].setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
+                a[defaultIndex[0]!-1]!.setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
+                if(defaultIndex[0]!<cantidadDePasos){
+                    a[defaultIndex[0]!]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
                 } else {
                     let completecontent = [];
                     for(let i=0;i<test.length;i++)completecontent.push(test[i]?.getStates().value);
@@ -146,7 +134,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
     const [pasos,setPasos]= useState(listaDePasos);
 
     const steporans = (step,i) => {
-        let a=test[parseInt(step.stepId)].getStates();
+        let a=test[parseInt(step.stepId)!]!.getStates();
         if(a.answer){
             return(
                 <VStack alignItems="center" justifyContent="center" margin={"auto"}>
@@ -177,11 +165,11 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
                     {steps.steps.map((step,i) => (
                     <AccordionItem
                     key={"AccordionItem"+i} 
-                    isDisabled={test[parseInt(step.stepId)].getStates().disabled}
-                    hidden={test[parseInt(step.stepId)].getStates().hidden}
+                    isDisabled={test[parseInt(step.stepId)]!.getStates().disabled}
+                    hidden={test[parseInt(step.stepId)]!.getStates().hidden}
                     >
                         <h2 key={"AIh2"+i}>
-                        <Alert key={"AIAlert"+i} status={test[parseInt(step.stepId)].getStates().answer ? "success" : "info"}>
+                        <Alert key={"AIAlert"+i} status={test[parseInt(step.stepId)]!.getStates().answer ? "success" : "info"}>
                             <AlertIcon key={"AIAlertIcon"+i}  />
                             <AccordionButton 
                                 key={"AIAccordionButton"+i}
@@ -195,7 +183,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
                                             contentID: steps?.code,
                                             topicID: topicId
                                         });
-                                        potstate.open=true;
+                                        potstate!.open=true;
                                         potstates[parseInt(step.stepId)]?.setStates(potstate);
                                         setTest(potstates);
                                     }else{
@@ -262,7 +250,7 @@ const Solver2 = ({topicId,steps,nextRouter}) => {
                                 function getKeyByValue(object, value) {
                                     return Object.keys(object).find(key => object[key] === value);
                                 }
-                                let a=exn[pid]
+                                let a=exn[pid as typeof exn]
                                 let b=getKeyByValue(exn,exn[pid]+1);
                                 if(a<3)router.push({pathname:"stageb",query:{pid:b},isReady:true}).then(() => router.reload())
                                 else router.push({pathname:"index"})
