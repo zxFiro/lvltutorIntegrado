@@ -46,7 +46,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     const [fc,setFC] = useState(true);
     const [attempts,setAttempts]=useState(0);
     const [hints,setHints]=useState(0);
-    const [lastHint,setLastHint]=useState(false);
+    //const [lastHint,setLastHint]=useState(false);
 
     const result=useRef(false);
     
