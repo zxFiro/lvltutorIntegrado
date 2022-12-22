@@ -1,0 +1,287 @@
+[{
+  "code": "fracc4",
+  "title": "Fracción Algebraica",
+  "type": "lvltutor",
+  "meta": {},
+  "text": "Reduce la siguiente expresion:",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "\\left(\\frac{5a}{2b}+\\frac{c}{3d}\\right):\\left(\\frac{a}{3b}-\\frac{c}{2d}\\right)",
+      "stepTitle": "Expresa la siguiente division como una fraccion.",
+      "displayResult": [
+        "\\frac{\\left(\\frac{5a}{2b}+\\frac{c}{3d}\\right)}{\\left(\\frac{a}{3b}-\\frac{c}{2d}\\right)}"
+      ],
+      "KCs": [
+        "TransDivRac"
+      ],
+      "values": [
+        {
+          "name": "a",
+          "value": 1
+        },
+        {
+          "name": "b",
+          "value": 2
+        },
+        {
+          "name": "c",
+          "value": 3
+        },
+        {
+          "name": "d",
+          "value": 4
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "El lado izquierdo de una división se conoce como dividendo, el lado derecho se conoce como divisor."
+        },
+        {
+          "hintId": 1,
+          "hint": "Una fracción es una forma de expresar un numero racional, un numero racional tiene forma p/q donde p es el numerador y q el denominador."
+        },
+        {
+          "hintId": 2,
+          "hint": "Para expresar esta división como numero racional el dividendo pasa a ser el numerador, mientras que el divisor pasa a ser el denominador. "
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\frac{\\left(\\frac{5a}{2b}+\\frac{c}{3d}\\right)}{\\left(\\frac{a}{3b}-\\frac{c}{2d}\\right)}"
+          ],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has expresado la division como una fraccion, una fraccion tambien es la expresion de un numero racional.",
+      "summary": "1)Se identifica que una división puede ser expresada como un numero racional."
+    },
+    {
+      "stepId": "1",
+      "expression": "\\frac{\\left(\\frac{5a}{2b}+\\frac{c}{3d}\\right)}{\\left(\\frac{a}{3b}-\\frac{c}{2d}\\right)}",
+      "stepTitle": "Realiza la suma de fracciones en el numerador y expresa el resultado final del numerador.",
+      "displayResult": [
+        "\\left(\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)"
+      ],
+      "KCs": [
+        "SRFrac",
+        "MCM"
+      ],
+      "values": [
+        {
+          "name": "a",
+          "value": 1
+        },
+        {
+          "name": "b",
+          "value": 2
+        },
+        {
+          "name": "c",
+          "value": 3
+        },
+        {
+          "name": "d",
+          "value": 4
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Identifica el numerador, luego identifica si hay operaciones realizables en el numerador."
+        },
+        {
+          "hintId": 1,
+          "hint": "Existe una suma de fracciones en el numerador, aplica la propiedad de suma de fracciones."
+        },
+        {
+          "hintId": 2,
+          "hint": "El numerador es la parte superior de la fracción."
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\left(\\frac{15ad+2bc}{6bd}\\right)"
+          ],
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has realizado las operaciones en el numerador correctamente.",
+      "summary": "2)Luego se resuelve las operaciones en el numerador."
+    },
+    {
+      "stepId": "2",
+      "expression": "\\frac{\\left(\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)}{\\left(\\frac{a}{3b}-\\frac{c}{2d}\\right)}",
+      "stepTitle": "Realiza la resta de fracciones en el denominador y expresa el resultado final del denominador.",
+      "displayResult": [
+        "\\left(\\frac{2\\cdot a\\cdot d-3\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)"
+      ],
+      "KCs": [
+        "SRFrac",
+        "MCM"
+      ],
+      "values": [
+        {
+          "name": "a",
+          "value": 1
+        },
+        {
+          "name": "b",
+          "value": 2
+        },
+        {
+          "name": "c",
+          "value": 3
+        },
+        {
+          "name": "d",
+          "value": 4
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Identifica el denominador, luego identifica si hay operaciones realizables en el denominador."
+        },
+        {
+          "hintId": 1,
+          "hint": "Existe una resta de fracciones en el denominador, aplica la propiedad de resta de fracciones."
+        },
+        {
+          "hintId": 2,
+          "hint": "El denominador es la parte inferior de la fracción."
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\left(\\frac{2ad-3bc}{6bd}\\right)"
+          ],
+          "nextStep": "3"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has realizado las operaciones en el Denominador correctamente.",
+      "summary": "3)Se continúa resolviendo las operaciones en el denominador."
+    },
+    {
+      "stepId": "3",
+      "expression": "\\frac{\\left(\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)}{\\left(\\frac{2\\cdot a\\cdot d-3\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)}",
+      "stepTitle": "Invierte la fraccion ubiccada en el denominador, luego expresa como multiplicacion el resultado con el numerador.",
+      "displayResult": [
+        "\\left(\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)\\cdot\\left(\\frac{2\\cdot a\\cdot d-3\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)"
+      ],
+      "KCs": [
+        "DivFrac"
+      ],
+      "values": [
+        {
+          "name": "a",
+          "value": 1
+        },
+        {
+          "name": "b",
+          "value": 2
+        },
+        {
+          "name": "c",
+          "value": 3
+        },
+        {
+          "name": "d",
+          "value": 4
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Aplica la propiedad de división de fracciones. "
+        },
+        {
+          "hintId": 1,
+          "hint": "La propiedad de división de fracciones indica que el denominador se invierte y pasa a multiplicar el numerador."
+        },
+        {
+          "hintId": 2,
+          "hint": "La solución deseada para este paso es: ((15ad+2bc)/(6bd))((6bd)/(2ad-3bc))"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\left(\\frac{15ad+2bc}{6bd}\\right)\\cdot\\left(\\frac{6bd}{2ad-3bc}\\right)"
+          ],
+          "nextStep": "4"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has invertido el denominador correctamente, esta operacion es lo que permite 'dividir' numeros racionales.",
+      "summary": "4)Con el fin de dividir una fracción se multiplica el numerador con el inverso del denominador."
+    },
+    {
+      "stepId": "4",
+      "expression": "\\left(\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{6\\cdot b\\cdot d}\\right)\\cdot\\left(\\frac{6\\cdot b\\cdot d}{2\\cdot a\\cdot d-3\\cdot b\\cdot c}\\right)",
+      "stepTitle": "Simplifica la siguiente expresion cancelando los terminos semejantes, luego multiplica ambas fracciones.",
+      "displayResult": [
+        "\\frac{15\\cdot a\\cdot d+2\\cdot b\\cdot c}{2\\cdot a\\cdot d-3\\cdot b\\cdot c}"
+      ],
+      "KCs": [
+        "CancTermSem",
+        "MultFrac"
+      ],
+      "values": [
+        {
+          "name": "a",
+          "value": 1
+        },
+        {
+          "name": "b",
+          "value": 2
+        },
+        {
+          "name": "c",
+          "value": 3
+        },
+        {
+          "name": "d",
+          "value": 4
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Identifica términos semejantes entre el numerador y denominador."
+        },
+        {
+          "hintId": 1,
+          "hint": "Cancelar términos semejantes en una fracción de productos es realizar la división entre ambos obteniendo una multiplicación por 1."
+        },
+        {
+          "hintId": 2,
+          "hint": "La solución deseada para este paso es: (15ad+2bc)/(2ad-3bc)"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\frac{15ad+2bc}{2ad-3bc}"
+          ],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has logrado reducir la expresion correctamente.",
+      "summary": "5)Luego se logra reducir la expresión eliminando los términos semejantes. Finalmente se aplica la multiplicación entre ambas fracciones."
+    }
+  ]
+}]

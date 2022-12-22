@@ -1,0 +1,103 @@
+[{
+  "code": "fracc3",
+  "title": "Suma de fracciones",
+  "type": "lvltutor",
+  "meta": {},
+  "text": "Realizar las operaciones encontradas en la siguiente expresion:",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "3\\cdot x^{2}, 5\\cdot x\\cdot y^{3}",
+      "stepTitle": "Encuentra el mínimo común múltiplo entre los siguietnes elementos",
+      "displayResult": [
+        "x^{2}\\cdot y^{3}"
+      ],
+      "KCs": [
+        "MCM"
+      ],
+      "values": [
+        {
+          "name": "x",
+          "value": 1
+        },
+        {
+          "name": "y",
+          "value": 2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Para obtener el mínimo común múltiplo puedes comenzar encontrando los factores unicos."
+        },
+        {
+          "hintId": 1,
+          "hint": "El mínimo común múltiplo se obtiene multiplicando todos los factores (comunes y no comunes), elevados a la máxima potencia."
+        },
+        {
+          "hintId": 2,
+          "hint": "En este caso el mínimo común múltiplo es: x²y³"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "15\\cdot x^{2}\\cdot y^{3}"
+          ],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has encontrado el mínimo común múltiplo.",
+      "summary": "1)Se obtiene el mínimo común múltiplo entre dos elementos."
+    },
+    {
+      "stepId": "1",
+      "expression": "\\frac{1}{3\\cdot x^{2}}+\\frac{1}{5\\cdot x\\cdot y^{3}}",
+      "stepTitle": "Suma las siguientes fracciones aplicando el mínimo común múltiplo encontrado.",
+      "displayResult": [
+        "\\frac{5\\cdot y^{3} + 3\\cdot x}{15\\cdot x^{2}\\cdot y^{3}}}"
+      ],
+      "KCs": [
+        "MCM"
+      ],
+      "values": [
+        {
+          "name": "x",
+          "value": 1
+        },
+        {
+          "name": "y",
+          "value": 2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Al sumar aplicando mínimo común múltiplo, este se deja como denominador comun."
+        },
+        {
+          "hintId": 1,
+          "hint": "Cada elemento del numerador en la fraccion resultante estara compuesto del mínimo común múltiplo multiplicado por el numerador y dividido por el denominador de la fraccion original correspondiente."
+        },
+        {
+          "hintId": 2,
+          "hint": "El resultado es: (5y³+3x)/(15x²y³))"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": [
+            "\\frac{5\\cdot y^{3} + 3\\cdot x}{15\\cdot x^{2}\\cdot y^{3}}"
+          ],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Revisa que la expresion ingresada este correcta.",
+      "correctMsg": "Has realizado la suma de fracciones aplicando mínimo común múltiplo correctamente.",
+      "summary": "2)Finalmente se realiza la suma de fracciones haciendo uso del mínimo común múltiplo encontrado."
+    }
+  ]
+}]
