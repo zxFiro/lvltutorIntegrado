@@ -36,7 +36,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     const [ta,setTa] = useState<MathField | null>(null);
 
     //Inputsimple
-    const [alerta,setAlerta] = useState("success");
+    const [alerta,setAlerta] = useState<"info" | "warning" | "success" | "error" | undefined>("success");
     const [alertaMSG,setAlertaMSG] = useState("");
     const [alertaVisibility,setAlertaVisibility] = useState(true);
     

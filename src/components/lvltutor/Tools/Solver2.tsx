@@ -1,7 +1,6 @@
-import { useRouter } from 'next/router'
-import { useState,memo, useEffect} from 'react';
+import { useState,memo, useEffect,useRef} from 'react';
 
-import { Flex, Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Heading, Alert,Text,AlertIcon,HStack,VStack,Button} from '@chakra-ui/react'
+import { Flex, Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Heading, Alert,Text,AlertIcon,HStack,VStack} from '@chakra-ui/react'
 import { MathComponent } from "../../MathJax";
 
 //la siguiente linea se utiliza para el wraper del componente Mq, el cual usa la libreria JS mathquill
@@ -35,17 +34,18 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
         { ssr: false }
     );
 
-    //segun next api reference router y routing dynamic routes
-    const router = useRouter();
-    const { pid } = router.query;
-
-
+    interface value {
+        ans:string;att:number;hints:number;lasthint:boolean;fail:boolean;duration:number;
+    }
+    interface potato {
+        "disabled":boolean;"hidden":boolean;"answer":boolean;"value":value;"open":boolean;
+    }
     class passingPotato {
-        private states = {
+        private states= {
             "disabled":true,
             "hidden":false,
             "answer":false,
-            "value":{ans:String,att:Number,hints:Number,lasthint:Boolean,fail:Boolean,duration:Number},
+            "value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},
             "open":false
         }
 
@@ -56,7 +56,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
             return this.states;
         }
 
-        public setStates(a){
+        public setStates(a:potato){
             this.states=a;
         }
     }
@@ -64,7 +64,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     const cantidadDePasos= steps.steps.length;
 
     let potatoStates = [new passingPotato()];
-    potatoStates[0]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
+    potatoStates[0]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},"open":true});
 
     const [defaultIndex,setDefaultIndex]=useState([0]);
 
@@ -74,13 +74,6 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     
     const [test,setTest] = useState(potatoStates);  
     const [resumen,setResumen]= useState(true);
-
-    const exn = {
-        "e1":0,
-        "e3":1,
-        "e5":2,
-        "e6":3
-    }
 
     const [submitValues,setSubmitValues]=useState({ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0})
 
@@ -111,7 +104,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 setCdateS(Date.now());
                 a[defaultIndex[0]!-1]!.setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
                 if(defaultIndex[0]!<cantidadDePasos){
-                    a[defaultIndex[0]!]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{},"open":true});
+                    a[defaultIndex[0]!]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},"open":true});
                 } else {
                     let completecontent = [];
                     for(let i=0;i<test.length;i++)completecontent.push(test[i]?.getStates().value);
@@ -133,7 +126,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
         }
     },[submit])
 
-    const [pasos,setPasos]= useState(listaDePasos);
+    const pasos= useRef(listaDePasos);
 
     const steporans = (step:Step,i:number) => {
         let a=test[parseInt(step.stepId)!]!.getStates();
@@ -148,7 +141,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 </VStack>
                 );
         }else{
-            return(pasos[i]);
+            return(pasos.current[i]);
         }
     }
 
@@ -159,7 +152,6 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
                 <MathComponent tex={steps.steps[0]!.expression} display={true} />
                 <Accordion
-                    onChange={(algo)=>setDefaultIndex(algo)}
                     index={defaultIndex}
                     allowToggle
                     allowMultiple
@@ -186,7 +178,7 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                                             topicID: topicId
                                         });
                                         potstate!.open=true;
-                                        potstates[parseInt(step.stepId)]?.setStates(potstate);
+                                        potstates[parseInt(step.stepId)]?.setStates(potstate!);
                                         setTest(potstates);
                                     }else{
                                         action({
@@ -195,8 +187,8 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                                             contentID: steps?.code,
                                             topicID: topicId
                                         });
-                                        potstate.open=false;
-                                        potstates[parseInt(step.stepId)]?.setStates(potstate);
+                                        potstate!.open=false;
+                                        potstates[parseInt(step.stepId)]?.setStates(potstate!);
                                         setTest(potstates);
                                     };
                                   }}
@@ -246,20 +238,6 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                                     )
                                 )
                             }
-                            <Button 
-                            colorScheme='teal'
-                            onClick={() => {
-                                function getKeyByValue(object, value) {
-                                    return Object.keys(object).find(key => object[key] === value);
-                                }
-                                let a=exn[pid as typeof exn]
-                                let b=getKeyByValue(exn,exn[pid]+1);
-                                if(a<3)router.push({pathname:"stageb",query:{pid:b},isReady:true}).then(() => router.reload())
-                                else router.push({pathname:"index"})
-                                
-                            }}>
-                                Siguiente
-                            </Button>
                         </VStack>
                     </Alert>
                 </Box>
