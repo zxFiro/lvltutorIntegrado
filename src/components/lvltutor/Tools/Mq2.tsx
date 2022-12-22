@@ -77,7 +77,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
             setAlertaVisibility(false);
             setFC(true);
             if(setDefaultIndex)setDefaultIndex([parseInt(step.stepId)+1])
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:lastHint,fail:false,duration:0})
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0})
             setError(false);
         } else {
             result.current=false;
@@ -85,7 +85,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
             setAlertaMSG("La expresion ingresada no es correcta.");
             setAlertaVisibility(false);
             setError(true);
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:lastHint,fail:true,duration:0})
+            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0})
         }
         action({
             verbName: "tryStep",
