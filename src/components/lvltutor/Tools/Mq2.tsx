@@ -158,18 +158,18 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
                 <Box>
                     <Stack spacing={4} direction='row' align='center' pb={4}>
                         {/*importante la distincion de onMouseDown vs onClick, con el evento onMouseDown aun no se pierde el foco del input*/}
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("(","MOUSEDOWN","MOUSEDOWN")}}>{"\("}</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools(")","MOUSEDOWN","MOUSEDOWN")}}>{"\)"}</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("^","MOUSEDOWN","MOUSEDOWN")}}>^</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("\\sqrt","MOUSEDOWN","MOUSEDOWN")}}>√</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("(")}}>{"\("}</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools(")")}}>{"\)"}</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("^")}}>^</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("\\sqrt")}}>√</Button>
                     </Stack>
                     <Stack spacing={4} direction='row' align='center' pb={4}>
                         {/*importante la distincion de onMouseDown vs onClick, con el evento onMouseDown aun no se pierde el foco del input,
                            Ademas con mousedown se puede usar preventDefault*/}
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("+","MOUSEDOWN","MOUSEDOWN")}}>+</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("-","MOUSEDOWN","MOUSEDOWN")}}>-</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("*","MOUSEDOWN","MOUSEDOWN")}}>*</Button>
-                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("\\frac","MOUSEDOWN","MOUSEDOWN")}}>/</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("+")}}>+</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("-")}}>-</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("*")}}>*</Button>
+                        <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();MQtools("\\frac")}}>/</Button>
                         <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault();clear()}}>C</Button>
                     </Stack>
                     <HStack spacing='4px' alignItems="center" justifyContent="center" margin={"auto"}>
