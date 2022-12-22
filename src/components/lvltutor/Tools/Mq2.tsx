@@ -29,8 +29,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
         width: "190px",
         maxHeight: "120px",
         marginBottom: "12px",
-        border: "3px solid #73AD21",
-        userSelect: "none"
+        border: "3px solid #73AD21"
     }
     const [placeholder,setPlaceholder] = useState(true);
 
@@ -192,7 +191,6 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
                                     refMQElement(mathField);
                                 }
                             }
-                            disabled={true}
                         >
                         </EditableMathField>
                         <Button colorScheme='teal' onMouseDown={(e)=>{e.preventDefault(); if(ta!=undefined)ta.keystroke('Right');}} size='xs'>R</Button>
