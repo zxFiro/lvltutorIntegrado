@@ -139,7 +139,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
                 setError={setError}
                 hintCount={hints}
                 setHints={setHints}
-                setLastHint={setLastHint}
+                //setLastHint={setLastHint}
                 ></Hint>
             )
         }
