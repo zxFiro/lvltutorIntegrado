@@ -11,13 +11,75 @@ import { useAction } from "../../../utils/action";
 
 import type {ExType,Step} from "./ExcerciseType";
 
+import { useSnapshot } from 'valtio';
+import MQProxy from './MQProxy';
+
+const Mq2 = dynamic(
+    () => {
+        return import("./Mq2");
+    },
+    { ssr: false }
+);
+
+interface value {
+    ans:string;att:number;hints:number;lasthint:boolean;fail:boolean;duration:number;
+}
+interface potato {
+    "disabled":boolean;"hidden":boolean;"answer":boolean;"value":value;"open":boolean;
+}
+class passingPotato {
+    private states= {
+        "disabled":true,
+        "hidden":false,
+        "answer":false,
+        "value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},
+        "open":false
+    }
+
+    public counter=0;
+
+    public getStates()
+    {
+        return this.states;
+    }
+
+    public setStates(a:potato){
+        this.states=a;
+    }
+}
+const Steporans = ({step,topicId,content,deefaultIndex,i}:{step:Step,topicId:string,content:string,deefaultIndex:number|undefined,i:number}) => {
+    //let a=test[parseInt(step.stepId)!]!.getStates();
+    if(false){
+        return(
+            <VStack alignItems="center" justifyContent="center" margin={"auto"}>
+                <MathComponent
+                key={"respuesta"+i}
+                tex={mqSnap.submitValues.ans}
+                display={true}
+                />
+            </VStack>
+            );
+    }else{
+        if(deefaultIndex!=undefined && deefaultIndex==i){
+            return(<Mq2 
+                key={"Mq2"+i}
+                step={step}
+                content={topicId}
+                topicId={content}
+                disablehint={false}
+            />)
+        }
+    }
+    return(<></>);
+}
+
+
 const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
-    const [cdateS,setCdateS]=useState(Date.now());
-    const [cdateE,setCdateE]=useState(Date.now());
+    const mqSnap=useSnapshot(MQProxy);
 
     const action = useAction();
     useEffect(() => {
-        setCdateS(Date.now())
+        MQProxy.startDate=Date.now();
         action({
         verbName: "loadContent",
         contentID: steps?.code,
@@ -25,48 +87,11 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
         });
     }, []);
 
-    const [submit,setSubmit]=useState(false);
-
-    const Mq2 = dynamic(
-        () => {
-            return import("./Mq2");
-        },
-        { ssr: false }
-    );
-
-    interface value {
-        ans:string;att:number;hints:number;lasthint:boolean;fail:boolean;duration:number;
-    }
-    interface potato {
-        "disabled":boolean;"hidden":boolean;"answer":boolean;"value":value;"open":boolean;
-    }
-    class passingPotato {
-        private states= {
-            "disabled":true,
-            "hidden":false,
-            "answer":false,
-            "value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},
-            "open":false
-        }
-
-        public counter=0;
-
-        public getStates()
-        {
-            return this.states;
-        }
-
-        public setStates(a:potato){
-            this.states=a;
-        }
-    }
 
     const cantidadDePasos= steps.steps.length;
 
     let potatoStates = [new passingPotato()];
     potatoStates[0]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},"open":true});
-
-    const [defaultIndex,setDefaultIndex]=useState([0]);
 
     for (let i=0; i< cantidadDePasos;i++) {
         potatoStates.push(new passingPotato());
@@ -75,36 +100,18 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     const [test,setTest] = useState(potatoStates);  
     const [resumen,setResumen]= useState(true);
 
-    const [submitValues,setSubmitValues]=useState({ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0})
-
-    const listaDePasos = steps.steps.map((step,i) => (
-        <Mq2 
-                key={"Mq2"+i}
-                step={step}
-                content={steps.code}
-                topicId={topicId}
-                disablehint={false}
-                setDefaultIndex={setDefaultIndex}
-                setSubmit={setSubmit}
-                setSubmitValues={setSubmitValues}
-                setCdateE={setCdateE}
-            >
-        </Mq2>
-        )
-    )
-
     useEffect(
        ()=>{ 
-        if(submit){
-            if(!submitValues.fail){
+        if(mqSnap.submit){
+            if(!mqSnap.submitValues.fail){
                 let a=test;
-                let duration=(cdateE-cdateS)/1000;
-                let sv=submitValues;
+                let duration=(MQProxy.endDate-MQProxy.startDate)/1000;
+                let sv=MQProxy.submitValues;
                 sv.duration=duration;
-                setCdateS(Date.now());
-                a[defaultIndex[0]!-1]!.setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
-                if(defaultIndex[0]!<cantidadDePasos){
-                    a[defaultIndex[0]!]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},"open":true});
+                MQProxy.startDate=Date.now();
+                a[mqSnap.deefaultIndex[0]!-1]!.setStates({"disabled":false,"hidden":false,"answer":true,"value":sv,"open":false});
+                if(mqSnap.deefaultIndex[0]!<cantidadDePasos){
+                    a[mqSnap.deefaultIndex[0]!]!.setStates({"disabled":false,"hidden":false,"answer":false,"value":{ans:"",att:0,hints:0,lasthint:false,fail:false,duration:0},"open":true});
                 } else {
                     let completecontent = [];
                     for(let i=0;i<test.length;i++)completecontent.push(test[i]?.getStates().value);
@@ -122,28 +129,10 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 }
                 setTest(a);
             }
-            setSubmit(false);
+            MQProxy.submit=false;
         }
-    },[submit])
+    },[mqSnap.submit])
 
-    const pasos= useRef(listaDePasos);
-
-    const steporans = (step:Step,i:number) => {
-        let a=test[parseInt(step.stepId)!]!.getStates();
-        if(a.answer){
-            return(
-                <VStack alignItems="center" justifyContent="center" margin={"auto"}>
-                    <MathComponent
-                    key={"respuesta"+i}
-                    tex={a.value.ans}
-                    display={true}
-                    />
-                </VStack>
-                );
-        }else{
-            return(pasos.current[i]);
-        }
-    }
 
     return(
         <Flex alignItems="center" justifyContent="center" margin={"auto"}>
@@ -152,8 +141,8 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                 <Heading as='h5' size='sm' mt={2}>{steps.text}</Heading>
                 <MathComponent tex={steps.steps[0]!.expression} display={true} />
                 <Accordion
-                    onChange={(algo)=>setDefaultIndex(algo as Array<number>)}
-                    index={defaultIndex}
+                    onChange={(algo)=>MQProxy.deefaultIndex=(algo as Array<number>)}
+                    index={MQProxy.deefaultIndex}
                     allowToggle={true}
                     allowMultiple={true}
                 >
@@ -202,10 +191,11 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                         </Alert>
                         </h2>
                         <AccordionPanel key={"AIAccordionPanel"+i} pb={4}>
-                        {/*En el siguiente elemento es un estado que almacena el componente que maneja el paso del ejercicio correspondiente*/}
-                        {
-                            steporans(step,i)
-                        }
+                        <Steporans step={step} topicId={topicId} content={steps.code} deefaultIndex={mqSnap.deefaultIndex[0]} i={i}/>
+                        <Alert status={mqSnap.alertType} mt={2} hidden={mqSnap.alertHidden}>
+                        <AlertIcon />
+                                {mqSnap.alertMsg}
+                        </Alert>
                         </AccordionPanel>
                     </AccordionItem>
                     ))

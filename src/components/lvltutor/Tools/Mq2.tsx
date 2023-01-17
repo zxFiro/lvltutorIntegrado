@@ -1,7 +1,9 @@
-import {Alert, AlertIcon,Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
+import {Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
 import {useState,memo, useEffect,useRef} from "react";
-import { addStyles, EditableMathField,MathField } from 'react-mathquill';
+import { addStyles, EditableMathField,MathField,StaticMathField } from 'react-mathquill';
 import { MathComponent } from "../../../components/MathJax";
+import katex from 'katex';
+import "katex/dist/katex.min.css";
 //se importa el componente hint desarrollado por Miguel Nahuelpan
 import Hint from "../Tools/Hint";
 import MQPostfixSolver from './MQPostfixSolver';
@@ -9,13 +11,38 @@ import MQPostfixparser from './MQPostfixparser';
 //reporte de acciones
 import { useAction } from "../../../utils/action";
 
+import { useSnapshot } from 'valtio';
+
+import MQProxy from './MQProxy';
+
 import type {Step} from "./ExcerciseType";
 
 addStyles();
 
+const KaTeXComponent = (texExpression:string) => {
+    const containerRef = useRef();
 
-const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSubmitValues,setCdateE}:
-    {step:Step,content:string,topicId:string,disablehint:boolean,setDefaultIndex:Function,setSubmit:Function,setSubmitValues:Function,setCdateE:Function}) => {
+    useEffect(() => {
+        katex.render(texExpression, containerRef.current);
+    }, [texExpression]);
+
+    return <div ref={containerRef} />
+}
+
+const MQStatic = ({exp,update}:{exp:string,update:boolean})  => {
+    const [texExp,setTexExp] = useState("");
+    useEffect(
+        ()=>{
+            setTimeout(()=>{setTexExp(exp)},10)
+    },[exp,update]);
+
+    return <StaticMathField>{texExp}</StaticMathField>
+}
+
+const Mq2 =  ({step,content,topicId,disablehint}:
+    {step:Step,content:string,topicId:string,disablehint:boolean}) => {
+
+    const mqSnap=useSnapshot(MQProxy) as typeof MQProxy;
 
     const action = useAction();
 
@@ -34,11 +61,6 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
     const [placeholder,setPlaceholder] = useState(true);
 
     const [ta,setTa] = useState<MathField | null>(null);
-
-    //Inputsimple
-    const [alerta,setAlerta] = useState<"info" | "warning" | "success" | "error" | undefined>("success");
-    const [alertaMSG,setAlertaMSG] = useState("");
-    const [alertaVisibility,setAlertaVisibility] = useState(true);
     
     //hooks de miguel definido para los hints
     const [error, setError] = useState(false); //true when the student enters an incorrect answers
@@ -70,21 +92,21 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
         //la validacion considera una precision con un 0.5% de error relativo
         if(relativeError<0.005) {
             result.current=true;
-            setCdateE(Date.now());
-            setAlerta("success");
-            setAlertaMSG("Has ingresado la expresion correctamente!.");
-            setAlertaVisibility(false);
+            MQProxy.endDate=Date.now();
+            MQProxy.alertType="success";
+            MQProxy.alertMsg="Has ingresado la expresion correctamente!."
+            MQProxy.alertHidden=false;
             setFC(true);
-            if(setDefaultIndex)setDefaultIndex([parseInt(step.stepId)+1])
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0})
+            MQProxy.deefaultIndex=[parseInt(step.stepId)+1]
+            MQProxy.submitValues={ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0}
             setError(false);
         } else {
             result.current=false;
-            setAlerta("error");
-            setAlertaMSG("La expresion ingresada no es correcta.");
-            setAlertaVisibility(false);
+            MQProxy.alertType="error";
+            MQProxy.alertMsg="La expresion ingresada no es correcta."
+            MQProxy.alertHidden=false;
             setError(true);
-            setSubmitValues({ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0})
+            MQProxy.submitValues={ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0}
         }
         action({
             verbName: "tryStep",
@@ -101,7 +123,7 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
               hints: hints,
             }
           });
-        setSubmit(true);
+        MQProxy.submit=true;
         setAttempts(attempts+1);
     }
 
@@ -152,8 +174,9 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
         <>
             <VStack alignItems="center" justifyContent="center" margin={"auto"}>
                 <Box>
-                    <MathComponent tex={step.expression} display={true} />
+                    <MathComponent tex={step.expression} />
                 </Box>
+                <MQStatic exp={step.expression} update={mqSnap.submit}/>
                 <Box>
                     <Stack spacing={4} direction='row' align='center' pb={4}>
                         {/*importante la distincion de onMouseDown vs onClick, con el evento onMouseDown aun no se pierde el foco del input*/}
@@ -212,10 +235,6 @@ const Mq2 =  ({step,content,topicId,disablehint,setDefaultIndex,setSubmit,setSub
                     </Box>
                     {enabledhint()}
             </HStack>
-            <Alert status={alerta} mt={2} hidden={alertaVisibility}>
-                <AlertIcon />
-                {alertaMSG}
-            </Alert>
         </>
     )
 

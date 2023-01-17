@@ -33,7 +33,7 @@
           {
             "stepId": "1",
             "KCs":["SRFrac","MCM"],
-            "expression": "\\frac{\\left(\\frac{a}{b}+\\frac{c}{d}\\right)}{\\left(\\frac{a}{b}-\\frac{c}{d}\\right)}",
+            "expression": "\\frac{\\textcolor{red}{\\left(\\frac{a}{b}+\\frac{c}{d}\\right)}}{\\left(\\frac{a}{b}-\\frac{c}{d}\\right)}",
             "stepTitle": "Realiza la suma de fracciones en el numerador y expresa el resultado final del numerador.",
             "displayResult": ["\\left(\\frac{a\\cdot d+b\\cdot c}{b\\cdot d}\\right)"],
             "values":[{"name":"a","value":1},{"name":"b","value":2},{"name":"c","value":3},{"name":"d","value":4}],
