@@ -1,4 +1,4 @@
-import {Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
+import {Button, Stack, Box, HStack, VStack,Heading} from '@chakra-ui/react';
 import {useState,memo, useEffect,useRef} from "react";
 import { addStyles, EditableMathField,MathField,StaticMathField } from 'react-mathquill';
 import { MathComponent } from "../../../components/MathJax";
@@ -19,7 +19,7 @@ import type {Step} from "./ExcerciseType";
 
 addStyles();
 
-const KaTeXComponent = (texExpression:string) => {
+const KaTeXComponent = ({texExpression}:{texExpression:string}) => {
     const containerRef = useRef();
 
     useEffect(() => {
@@ -37,6 +37,42 @@ const MQStatic = ({exp,update}:{exp:string,update:boolean})  => {
     },[exp,update]);
 
     return <StaticMathField>{texExp}</StaticMathField>
+}
+
+const Enabledhint = ({disablehint,step,latex}:{disablehint:boolean,step:Step,latex:string}) => {
+    const mqSnap=useSnapshot(MQProxy) as typeof MQProxy;
+
+    const [error, setError] = useState(false);
+    const [hints,setHints]=useState(0);
+
+    useEffect(()=>{
+        MQProxy.error=error;
+    },[error])
+
+    useEffect(()=>{
+        MQProxy.hints=hints;
+    },[hints])
+
+    if(disablehint){
+        return (
+            <></>
+        )
+    }else{
+        return(
+            <Hint
+            hints={step.hints}
+            contentId={mqSnap.content}
+            topicId={mqSnap.topicId}
+            stepId={step.stepId}
+            matchingError={step.matchingError}
+            response={[latex]}
+            error={error}
+            setError={setError}
+            hintCount={hints}
+            setHints={setHints}
+            ></Hint>
+        )
+    }
 }
 
 const Mq2 =  ({step,content,topicId,disablehint}:
@@ -62,12 +98,8 @@ const Mq2 =  ({step,content,topicId,disablehint}:
 
     const [ta,setTa] = useState<MathField | null>(null);
     
-    //hooks de miguel definido para los hints
-    const [error, setError] = useState(false); //true when the student enters an incorrect answers
     const [fc,setFC] = useState(true);
     const [attempts,setAttempts]=useState(0);
-    const [hints,setHints]=useState(0);
-    //const [lastHint,setLastHint]=useState(false);
 
     const result=useRef(false);
     
@@ -98,15 +130,15 @@ const Mq2 =  ({step,content,topicId,disablehint}:
             MQProxy.alertHidden=false;
             setFC(true);
             MQProxy.deefaultIndex=[parseInt(step.stepId)+1]
-            MQProxy.submitValues={ans:latex,att:attempts,hints:hints,lasthint:false,fail:false,duration:0}
-            setError(false);
+            MQProxy.submitValues={ans:latex,att:attempts,hints:mqSnap.hints,lasthint:false,fail:false,duration:0}
+            MQProxy.error=false;
         } else {
             result.current=false;
             MQProxy.alertType="error";
             MQProxy.alertMsg="La expresion ingresada no es correcta."
             MQProxy.alertHidden=false;
-            setError(true);
-            MQProxy.submitValues={ans:latex,att:attempts,hints:hints,lasthint:false,fail:true,duration:0}
+            MQProxy.error=true;
+            MQProxy.submitValues={ans:latex,att:attempts,hints:mqSnap.hints,lasthint:false,fail:true,duration:0}
         }
         action({
             verbName: "tryStep",
@@ -120,7 +152,7 @@ const Mq2 =  ({step,content,topicId,disablehint}:
                 latex
               ],
               attempts: attempts,
-              hints: hints,
+              hints: mqSnap.hints,
             }
           });
         MQProxy.submit=true;
@@ -142,28 +174,6 @@ const Mq2 =  ({step,content,topicId,disablehint}:
         if(ta!=undefined)setLatex("");
     }
 
-    const enabledhint = () => {
-        if(disablehint){
-            return (
-                <></>
-            )
-        }else{
-            return(
-                <Hint
-                hints={step.hints}
-                contentId={content}
-                topicId={topicId}
-                stepId={step.stepId}
-                matchingError={step.matchingError}
-                response={[latex]}
-                error={error}
-                setError={setError}
-                hintCount={hints}
-                setHints={setHints}
-                ></Hint>
-            )
-        }
-    }
     useEffect(()=>{
         if(fc&&latex!=""&&latex!=" "){
             setFC(false);
@@ -173,10 +183,12 @@ const Mq2 =  ({step,content,topicId,disablehint}:
     return (
         <>
             <VStack alignItems="center" justifyContent="center" margin={"auto"}>
-                <Box>
-                    <MathComponent tex={step.expression} />
-                </Box>
+                <Heading as='h1' size='lg' noOfLines={3}>Mathjax</Heading>
+                <MathComponent tex={step.expression} />
+                <Heading as='h1' size='lg' noOfLines={3}>Mathquil</Heading>
                 <MQStatic exp={step.expression} update={mqSnap.submit}/>
+                <Heading as='h1' size='lg' noOfLines={3}>Katex</Heading>
+                <KaTeXComponent texExpression={step.expression}/>
                 <Box>
                     <Stack spacing={4} direction='row' align='center' pb={4}>
                         {/*importante la distincion de onMouseDown vs onClick, con el evento onMouseDown aun no se pierde el foco del input*/}
@@ -233,7 +245,7 @@ const Mq2 =  ({step,content,topicId,disablehint}:
                             }
                         >Enviar</Button>
                     </Box>
-                    {enabledhint()}
+                    <Enabledhint disablehint={disablehint} step={step} latex={latex}/>
             </HStack>
         </>
     )

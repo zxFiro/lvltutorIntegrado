@@ -1,5 +1,4 @@
-import { useState,memo, useEffect,useRef} from 'react';
-
+import { useState,memo, useEffect} from 'react';
 import { Flex, Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Heading, Alert,Text,AlertIcon,HStack,VStack} from '@chakra-ui/react'
 import { MathComponent } from "../../MathJax";
 
@@ -47,7 +46,10 @@ class passingPotato {
         this.states=a;
     }
 }
+
 const Steporans = ({step,topicId,content,deefaultIndex,i}:{step:Step,topicId:string,content:string,deefaultIndex:number|undefined,i:number}) => {
+    const mqSnap=useSnapshot(MQProxy) as typeof MQProxy;
+
     //let a=test[parseInt(step.stepId)!]!.getStates();
     if(false){
         return(
@@ -76,10 +78,14 @@ const Steporans = ({step,topicId,content,deefaultIndex,i}:{step:Step,topicId:str
 
 const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     const mqSnap=useSnapshot(MQProxy);
-
     const action = useAction();
     useEffect(() => {
         MQProxy.startDate=Date.now();
+        MQProxy.content=steps.code;
+        MQProxy.topicId=topicId;
+        MQProxy.disablehint=false;
+        MQProxy.deefaultIndex=[0];
+        MQProxy.hints=0;
         action({
         verbName: "loadContent",
         contentID: steps?.code,

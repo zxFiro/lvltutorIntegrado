@@ -17,7 +17,9 @@ interface sharedValues{
     endDate:number,
     alertType:"info" | "warning" | "success" | "error" | undefined,
     alertMsg:string,
-    alertHidden:boolean
+    alertHidden:boolean,
+    hints:number,
+    error:boolean
 }
 
 const MQProxy = proxy<sharedValues>
@@ -33,7 +35,9 @@ const MQProxy = proxy<sharedValues>
     endDate:0,
     alertType:"success",
     alertMsg:"",
-    alertHidden:true
+    alertHidden:true,
+    hints:0,
+    error:false
 });
 
 export default MQProxy;
