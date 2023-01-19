@@ -18,7 +18,7 @@ const Plain = ({topicId,steps}:{topicId:string,steps:ExType}) => {
     return (
         <>
         {steps?.type == "lvltutor" ? (
-            <Suspense fallback={<LoadingPotatoes/>}><Lvltutor topicId={topicId} steps={steps}/></Suspense>   
+            <Suspense fallback={<LoadingPotatoes/>}><Lvltutor key={topicId} topicId={topicId} steps={steps}/></Suspense>   
         ) : "potato"}
         </>
     )

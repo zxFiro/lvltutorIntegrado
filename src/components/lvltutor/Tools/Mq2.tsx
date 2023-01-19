@@ -1,9 +1,6 @@
-import {Button, Stack, Box, HStack, VStack,Heading} from '@chakra-ui/react';
-import {useState,memo, useEffect,useRef} from "react";
+import {Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
+import {useState, useEffect,useRef} from "react";
 import { addStyles, EditableMathField,MathField,StaticMathField } from 'react-mathquill';
-import { MathComponent } from "../../../components/MathJax";
-import katex from 'katex';
-import "katex/dist/katex.min.css";
 //se importa el componente hint desarrollado por Miguel Nahuelpan
 import Hint from "../Tools/Hint";
 import MQPostfixSolver from './MQPostfixSolver';
@@ -19,28 +16,19 @@ import type {Step} from "./ExcerciseType";
 
 addStyles();
 
-const KaTeXComponent = ({texExpression}:{texExpression:string}) => {
-    const containerRef = useRef();
-
-    useEffect(() => {
-        katex.render(texExpression, containerRef.current);
-    }, [texExpression]);
-
-    return <div ref={containerRef} />
-}
-
-const MQStatic = ({exp,update}:{exp:string,update:boolean})  => {
+const MQStatic = ({exp,currentStep}:{exp:string,currentStep:boolean})  => {
     const [texExp,setTexExp] = useState("");
     useEffect(
         ()=>{
-            setTimeout(()=>{setTexExp(exp)},10)
-    },[exp,update]);
+            if(currentStep) setTimeout(()=>{setTexExp(exp)},10);
+            
+    },[exp,currentStep]);
 
     return <StaticMathField>{texExp}</StaticMathField>
 }
 
 const Enabledhint = ({disablehint,step,latex}:{disablehint:boolean,step:Step,latex:string}) => {
-    const mqSnap=useSnapshot(MQProxy) as typeof MQProxy;
+    const mqSnap=useSnapshot(MQProxy);
 
     const [error, setError] = useState(false);
     const [hints,setHints]=useState(0);
@@ -78,7 +66,7 @@ const Enabledhint = ({disablehint,step,latex}:{disablehint:boolean,step:Step,lat
 const Mq2 =  ({step,content,topicId,disablehint}:
     {step:Step,content:string,topicId:string,disablehint:boolean}) => {
 
-    const mqSnap=useSnapshot(MQProxy) as typeof MQProxy;
+    const mqSnap=useSnapshot(MQProxy);
 
     const action = useAction();
 
@@ -183,12 +171,7 @@ const Mq2 =  ({step,content,topicId,disablehint}:
     return (
         <>
             <VStack alignItems="center" justifyContent="center" margin={"auto"}>
-                <Heading as='h1' size='lg' noOfLines={3}>Mathjax</Heading>
-                <MathComponent tex={step.expression} />
-                <Heading as='h1' size='lg' noOfLines={3}>Mathquil</Heading>
-                <MQStatic exp={step.expression} update={mqSnap.submit}/>
-                <Heading as='h1' size='lg' noOfLines={3}>Katex</Heading>
-                <KaTeXComponent texExpression={step.expression}/>
+                <MQStatic exp={step.expression} currentStep={(parseInt(step.stepId)==mqSnap.deefaultIndex[0])?true:false}/>
                 <Box>
                     <Stack spacing={4} direction='row' align='center' pb={4}>
                         {/*importante la distincion de onMouseDown vs onClick, con el evento onMouseDown aun no se pierde el foco del input*/}
@@ -252,4 +235,4 @@ const Mq2 =  ({step,content,topicId,disablehint}:
 
 }
 
-export default memo(Mq2);
+export default Mq2;

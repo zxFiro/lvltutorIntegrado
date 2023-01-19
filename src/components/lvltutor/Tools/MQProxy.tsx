@@ -6,8 +6,8 @@ interface value {
 }
 
 interface sharedValues{
-    step:Step | null,
     content:string,
+    step:Step | null,
     topicId:string,
     disablehint:boolean,
     deefaultIndex:Array<number>,
@@ -22,10 +22,9 @@ interface sharedValues{
     error:boolean
 }
 
-const MQProxy = proxy<sharedValues>
-({
-    step:null,
+const initialObj:sharedValues={
     content:"",
+    step:null,
     topicId:"",
     disablehint:false,
     deefaultIndex:[0],
@@ -38,6 +37,12 @@ const MQProxy = proxy<sharedValues>
     alertHidden:true,
     hints:0,
     error:false
-});
+}
+
+const MQProxy = proxy(initialObj)
+
+export const reset = () => {
+    Object.assign(MQProxy, initialObj)
+}
 
 export default MQProxy;
