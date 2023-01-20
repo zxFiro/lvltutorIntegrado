@@ -13,6 +13,7 @@ import type {ExType,Step} from "./ExcerciseType";
 import { useSnapshot } from 'valtio';
 import MQProxy,{reset} from './MQProxy';
 
+
 const Mq2 = dynamic(
     () => {
         return import("./Mq2");
@@ -42,10 +43,16 @@ const Steporans = ({step,topicId,content,i,answer}:{step:Step,topicId:string,con
     useEffect(()=>{
         if(answer && answer!=""){
             setCC(
-                    <MQStatic
-                    key={"respuesta"+i}
-                    tex={answer}
-                    />
+                    <>
+                        <MQStatic
+                        key={"respuesta"+i}
+                        tex={answer}
+                        />
+                        <Alert key={"Alert"+topicId+"i"} status={"success"} mt={2}>
+                        <AlertIcon key={"AlertIcon"+topicId+"i"}/>
+                                {step.correctMsg}
+                        </Alert>
+                    </>
                 );
         }else{
             setCC(<Mq2 
@@ -192,10 +199,6 @@ const Solver2 = ({topicId,steps}:{topicId:string,steps:ExType}) => {
                         </h2>
                         <AccordionPanel key={"AIAccordionPanel"+i} pb={4}>
                         <Steporans step={step} topicId={topicId} content={steps.code} i={i} answer={test[parseInt(step.stepId)]?.value?.ans}/>
-                        <Alert key={"Alert"+topicId+"i"} status={mqSnap.alertType} mt={2} hidden={mqSnap.alertHidden}>
-                        <AlertIcon key={"AlertIcon"+topicId+"i"}/>
-                                {mqSnap.alertMsg}
-                        </Alert>
                         </AccordionPanel>
                     </AccordionItem>
                     ))

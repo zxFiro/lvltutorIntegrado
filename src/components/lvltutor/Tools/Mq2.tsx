@@ -1,10 +1,11 @@
-import {Button, Stack, Box, HStack, VStack} from '@chakra-ui/react';
+import {Button, Stack, Box, HStack, VStack,Alert,AlertIcon} from '@chakra-ui/react';
 import {useState, useEffect,useRef} from "react";
 import { addStyles, EditableMathField,MathField,StaticMathField } from 'react-mathquill';
 //se importa el componente hint desarrollado por Miguel Nahuelpan
 import Hint from "../Tools/Hint";
 import MQPostfixSolver from './MQPostfixSolver';
 import MQPostfixparser from './MQPostfixparser';
+import MQPostfixstrict from './MQPostfixstrict';
 //reporte de acciones
 import { useAction } from "../../../utils/action";
 
@@ -38,6 +39,11 @@ const Enabledhint = ({disablehint,step,latex}:{disablehint:boolean,step:Step,lat
     },[error])
 
     useEffect(()=>{
+        setError(mqSnap.error)
+    },
+    [mqSnap.error])
+
+    useEffect(()=>{
         MQProxy.hints=hints;
     },[hints])
 
@@ -62,32 +68,30 @@ const Enabledhint = ({disablehint,step,latex}:{disablehint:boolean,step:Step,lat
         )
     }
 }
+//inline style aprendido para componentes react en... https://codeburst.io/4-four-ways-to-style-react-components-ac6f323da822
+const EMFStyle ={
+    width: "190px",
+    maxHeight: "120px",
+    marginBottom: "12px",
+    border: "3px solid #73AD21"
+}
 
 const Mq2 =  ({step,content,topicId,disablehint}:
     {step:Step,content:string,topicId:string,disablehint:boolean}) => {
 
     const mqSnap=useSnapshot(MQProxy);
-
     const action = useAction();
 
     let entero= parseInt(step.stepId);
 
     //Mq1
     const [latex, setLatex] = useState(" ");
-
-    //inline style aprendido para componentes react en... https://codeburst.io/4-four-ways-to-style-react-components-ac6f323da822
-    const EMFStyle ={
-        width: "190px",
-        maxHeight: "120px",
-        marginBottom: "12px",
-        border: "3px solid #73AD21"
-    }
     const [placeholder,setPlaceholder] = useState(true);
-
-    const [ta,setTa] = useState<MathField | null>(null);
-    
-    const [fc,setFC] = useState(true);
+    const [ta,setTa] = useState<MathField | null>(null); 
     const [attempts,setAttempts]=useState(0);
+    const [alertType,setAlertType] = useState<"info" | "warning" | "success" | "error" | undefined>();
+    const [alertMsg,setAlertMsg] = useState("");
+    const [alertHidden,setAlertHidden] = useState(true);
 
     const result=useRef(false);
     
@@ -98,6 +102,8 @@ const Mq2 =  ({step,content,topicId,disablehint}:
         let exp=step.answers[0]!.answer[0];
         let parse1=MQPostfixparser(exp!);
         let parse2=MQPostfixparser(latex);
+        console.log(parse1);
+        console.log(parse2);
         let answer1 = "";
         let answer2 = "";
         if (step.values != undefined) {
@@ -110,21 +116,17 @@ const Mq2 =  ({step,content,topicId,disablehint}:
         let relativeError=Math.abs(1-(parseFloat(answer1)/parseFloat(answer2)));
         console.log(relativeError,parseInt(answer1),parseInt(answer2));
         //la validacion considera una precision con un 0.5% de error relativo
-        if(relativeError<0.005) {
+        if(relativeError<0.005 && MQPostfixstrict(parse1,parse2)) {
             result.current=true;
             MQProxy.endDate=Date.now();
-            MQProxy.alertType="success";
-            MQProxy.alertMsg="Has ingresado la expresion correctamente!."
-            MQProxy.alertHidden=false;
-            setFC(true);
             MQProxy.deefaultIndex=[parseInt(step.stepId)+1]
             MQProxy.submitValues={ans:latex,att:attempts,hints:mqSnap.hints,lasthint:false,fail:false,duration:0}
             MQProxy.error=false;
         } else {
             result.current=false;
-            MQProxy.alertType="error";
-            MQProxy.alertMsg="La expresion ingresada no es correcta."
-            MQProxy.alertHidden=false;
+            setAlertType("error");
+            setAlertMsg("La expresion ingresada no es correcta.");
+            setAlertHidden(false);
             MQProxy.error=true;
             MQProxy.submitValues={ans:latex,att:attempts,hints:mqSnap.hints,lasthint:false,fail:true,duration:0}
         }
@@ -161,12 +163,6 @@ const Mq2 =  ({step,content,topicId,disablehint}:
     const clear = () =>{
         if(ta!=undefined)setLatex("");
     }
-
-    useEffect(()=>{
-        if(fc&&latex!=""&&latex!=" "){
-            setFC(false);
-        }
-    },[latex]);
 
     return (
         <>
@@ -223,13 +219,22 @@ const Mq2 =  ({step,content,topicId,disablehint}:
                             width={"88px"}
                             onClick={
                                 ()=>{
-                                    handleAnswer();
+                                    if(!(latex.localeCompare("")==0 || latex.localeCompare(" ")==0))handleAnswer();
+                                    else{
+                                        setAlertType("error");
+                                        setAlertMsg("Comienza por ingresar una expresion.");
+                                        setAlertHidden(false);
+                                    }
                                 }
                             }
                         >Enviar</Button>
                     </Box>
                     <Enabledhint disablehint={disablehint} step={step} latex={latex}/>
             </HStack>
+            <Alert key={"Alert"+topicId+"i"} status={alertType} mt={2} hidden={alertHidden}>
+            <AlertIcon key={"AlertIcon"+topicId+"i"}/>
+                    {"("+attempts+") "+alertMsg}
+            </Alert>
         </>
     )
 
